@@ -18,13 +18,13 @@ export default async function login(
   const existingUser = await pool.query("SELECT * FROM users WHERE email = $1", [request.email]);
 
   if (existingUser.rows.length === 0) {
-    return { message: "Incorrect username or password", error: true };
+    return { message: "Incorrect email or password", error: true };
   }
 
   const validPassword = existingUser.rows[0].password === request.password;
 
   if (!validPassword) {
-    return { message: "Incorrect username or password", error: true };
+    return { message: "Incorrect email or password", error: true };
   }
 
   const session: Session = {

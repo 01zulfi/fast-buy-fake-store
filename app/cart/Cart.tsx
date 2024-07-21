@@ -11,10 +11,34 @@ import {
   TableHeader,
   TableRow
 } from "@/components/ui/table";
+import { useToast } from "@/components/ui/use-toast";
 import useCart from "@/lib/use-cart";
 
 export default function Cart() {
-  const { cart, total, updateQuantity, remove } = useCart();
+  const { cart, total, updateQuantity, remove, count } = useCart();
+  const { toast } = useToast();
+
+  async function handleCheckout() {
+    try {
+      const response = await fetch("/api/checkout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ price: (total * 100).toString(), userId: "123" }),
+      });
+      const data = await response.json();
+      console.log(data)
+      // window.open(data.checkoutUrl, "_blank");
+    } catch (e) {
+      console.error(e);
+      toast({
+        title: "An error occurred",
+        description: "Please try again.",
+        variant: "destructive"
+      })
+    }
+  }
 
   return (
     <div className="my-6 mx-10">
@@ -61,6 +85,9 @@ export default function Cart() {
         </>
       ) : (
         <p>No items in cart</p>
+      )}
+      {count > 0 && (
+        <Button className="my-10" onClick={handleCheckout}>Checkout ${total}</Button>
       )}
     </div>
   )
