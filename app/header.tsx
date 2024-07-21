@@ -4,8 +4,12 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { BoxModelIcon, HamburgerMenuIcon, PersonIcon } from '@radix-ui/react-icons';
 import Link from "next/link";
 import LiveCardCount from './LiveCartCount';
+import getAuth from '@/lib/get-auth';
+import logout from '@/lib/logout';
 
-export default function Header() {
+export default async function Header() {
+  const { authenticated, user } = await getAuth();
+
   return (
     <header className="sticky top-0 flex justify-between h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
       <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
@@ -72,21 +76,36 @@ export default function Header() {
           </nav>
         </SheetContent>
       </Sheet>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="secondary" size="icon" className="rounded-full">
-            <PersonIcon className="h-5 w-5" />
-            <span className="sr-only">Toggle user menu</span>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuLabel>My Account</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem>Settings</DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem>Logout</DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+      {
+        authenticated ? (
+          <div className='flex items-center gap-2'>
+            <p>
+              Hello, {user?.username}!
+            </p>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="secondary" size="icon" className="rounded-full">
+                  <PersonIcon className="h-5 w-5" />
+                  <span className="sr-only">Toggle user menu</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>
+                  <form action={logout}>
+                    <Button type="submit" variant="secondary">Logout</Button>
+                  </form>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        ) : (
+          <Link href="/login">
+            <Button variant="outline" className="outline outline-1 outline-primary hover:translate-y-[-0.1rem]">Login</Button>
+          </Link>
+        )
+      }
     </header>
   )
 }

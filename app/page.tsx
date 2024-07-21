@@ -17,7 +17,7 @@ export default async function Home() {
         </h2>
         <div className='grid grid-cols-2 sm:grid-cols-5 gap-12'>
           {products.map(product => (
-            <div className="flex flex-col p-4 border-2 rounded gap-2 shadow-lg">
+            <div key={product.id} className="flex flex-col p-4 border-2 rounded gap-2 shadow-lg">
               <img src={product.image} alt={product.title} className='w-[200px] aspect-square' />
               <h3 className="w-full overflow-hidden whitespace-nowrap overflow-ellipsis">{product.title}</h3>
               <p className="font-bold self-end">$ {product.price}</p>

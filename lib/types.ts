@@ -1,3 +1,5 @@
+import { userAgentFromString } from "next/server";
+
 export interface Product {
   id: number;
   title: string;
@@ -9,4 +11,10 @@ export interface Product {
 
 export interface ProductStorage extends Product {
   quantity: number;
+}
+
+export interface Session {
+  sessionId: number;
+  userId: number;
+  expires: number;
 }
